@@ -9,12 +9,15 @@ app.use(express.urlencoded({
   }));
 const userCredentials = require('./database-management/userInfo.js');
 app.set('view engine', 'ejs');
-app.use('/', express.static(path.join(__dirname, 'files')))
+
+
+//Routes
+app.use('/', express.static(path.join(__dirname, 'files')));
+
+
 app.use('/newAccount',(req,res)=>{
     res.render('newUser');
 })
-
-
 
 app.use('/Create-User',async (req, res) => {
     console.log(req.body.user)
@@ -38,6 +41,25 @@ app.use('/Create-User',async (req, res) => {
     });
     }catch(err) {
         console.log(err);
+    }
+})
+
+app.use('/Login',async (req, res)=>{
+    try{
+        const user = await userCredentials.findOne({username:req.body.username})
+            .catch(err => res.status(400).send("Error getting user"));
+
+        if(user === null){
+            res.status(404).send("User not found");
+        }
+        if(await bcrypt.compare(req.body.password,user.password)){
+            res.render('dashBoard');
+        }
+        else{
+            res.status(500).send('Wrong Pass')
+        }
+    }catch(err){
+        res.status(500).send("Internal Server Error");
     }
 })
 
