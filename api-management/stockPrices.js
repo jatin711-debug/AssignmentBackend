@@ -10,7 +10,7 @@ const stockData = async (stockName,region) => {
           'x-rapidapi-host': 'apidojo-yahoo-finance-v1.p.rapidapi.com'
         }
       };
-    await axios.request(options).then((response)=> {
+  await axios.request(options).then((response)=> {
 	console.log(response.data);
     return response;
 }).catch((error)=> {

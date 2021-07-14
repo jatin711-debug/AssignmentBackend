@@ -45,23 +45,37 @@ app.use('/Create-User',async (req, res) => {
 })
 
 app.use('/Login',async (req, res)=>{
+var alreadyIn = false;
     try{
         const user = await userCredentials.findOne({username:req.body.username})
             .catch(err => res.status(400).send("Error getting user"));
-
         if(user === null){
             res.status(404).send("User not found");
         }
+        if(req.body.amount && alreadyIn){
+            userCredentials.amount = req.body.amount;
+            userCredentials.save((err)=>{
+                if(err) console.log(err);
+            })
+            res.render('dashBoard',{userData:user});
+        }
         if(await bcrypt.compare(req.body.password,user.password)){
-            res.render('dashBoard');
+            alreadyIn = true;
+            res.render('dashBoard',{userData:user});
         }
         else{
-            res.status(500).send('Wrong Pass')
+            res.status(401).send('Wrong Pass')
         }
     }catch(err){
         res.status(500).send("Internal Server Error");
     }
 })
+
+
+app.use('/addMoney',(req, res)=>{
+    res.render('addMoney');
+})
+
 
 app.listen('2000',()=>{
     console.log('listening on port 2000');
