@@ -7,12 +7,15 @@
     <title>Dash-Board</title>
 </head>
 <body>
-    <h1>Welcome <%= userData.username %>!!!... </h1>
+    <h1 id="username" value="<%= userData.username %>">Welcome <%= userData.username.toUpperCase() %>!!!... </h1>
     <div class="balance">
         <h2>Your account Now Have $<%= userData.balance %></h2>
     </div>
+
+    <p> op-> <% marketData %></p>
+
     <div class="addMoney">
-        <a href="/addMoney">Add Money To Wallet</a>
+        <button onClick="addAmount()">Add Money To Wallet</button>
     </div>
 </body>
 </html>

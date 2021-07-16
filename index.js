@@ -45,32 +45,24 @@ app.use('/Create-User',async (req, res) => {
 })
 
 app.use('/Login',async (req, res)=>{
-var alreadyIn = false;
     try{
         const user = await userCredentials.findOne({username:req.body.username})
             .catch(err => res.status(400).send("Error getting user"));
         if(user === null){
             res.status(404).send("User not found");
         }
-        if(req.body.amount && alreadyIn){
-            userCredentials.amount = req.body.amount;
-            userCredentials.save((err)=>{
-                if(err) console.log(err);
-            })
-            res.render('dashBoard',{userData:user});
-        }
         if(await bcrypt.compare(req.body.password,user.password)){
-            alreadyIn = true;
-            res.render('dashBoard',{userData:user});
+            const {data :{count}} = stock.data('tesla')
+            console.log(count)
+            res.render('dashBoard',{userData:user,marketData:count});
         }
         else{
             res.status(401).send('Wrong Pass')
         }
     }catch(err){
-        res.status(500).send("Internal Server Error");
+        console.log(err)
     }
 })
-
 
 app.use('/addMoney',(req, res)=>{
     res.render('addMoney');
